@@ -2,5 +2,4 @@ Flask
 selenium
 beautifulsoup4
 pandas
-zoneinfo; python_version >= "3.9"
-requests
+backports.zoneinfo; python_version < "3.9"
