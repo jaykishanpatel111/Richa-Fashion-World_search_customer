@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop Search</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 15px;
+            color: #555;
+        }
+
+        input[list], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.02);
+        }
+
+        h3 {
+            text-align: center;
+            color: #444;
+            margin-top: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 14px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            color: #444;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        p {
+            text-align: center;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        /* Loading overlay */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #4CAF50;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 12px;
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Search for Shop Category in a Country</h2>
+
+        <form method="POST">
+            <label for="category">Category:</label>
+            <input list="categoryList" name="category" id="category" required>
+            <datalist id="categoryList">
+                {% for cat in categories %}
+                    <option value="{{ cat }}">
+                {% endfor %}
+            </datalist>
+
+            <label for="country">Country:</label>
+            <input list="countryList" name="country" id="country" required>
+            <datalist id="countryList">
+                {% for c in countries %}
+                    <option value="{{ c }}">
+                {% endfor %}
+            </datalist>
+
+            <button type="submit">Search</button>
+        </form>
+
+        {% if search %}
+            <h3>Results for "{{ search }}"</h3>
+        {% endif %}
+
+        {% if result %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Contact Number</th>
+                    <th>Info</th>
+                </tr>
+                {% for r in result %}
+                    <tr>
+                        <td>{{ r.name }}</td>
+                        <td>{{ r.address }}</td>
+                        <td>{{ r.contact_number }}</td>
+                        <td>{{ r.info.replace('\n', '<br>')|safe }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% elif search %}
+            <p>No results found or scraping failed.</p>
+        {% endif %}
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Scraping in progress. Please wait...</div>
+    </div>
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function () {
+            document.getElementById("loadingOverlay").style.display = "flex";
+        });
+    </script>
+
+</body>
+</html>
