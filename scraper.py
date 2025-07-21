@@ -24,17 +24,20 @@ if not logger.handlers:
 
 def open_browser(link):
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless=new")  # lighter headless mode in newer Chrome
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-features=VizDisplayCompositor")
 
-    # ✅ Use a temporary user data directory
-    temp_dir = tempfile.mkdtemp()
-    chrome_options.add_argument(f"--user-data-dir={temp_dir}")
+    # use a temp profile to avoid session errors
+    chrome_options.add_argument(f"--user-data-dir=/tmp/profile-{random.randint(1,100000)}")
 
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(link)
-    time.sleep(3)
+    time.sleep(2)
     return driver
 
 def type_search_query(driver, search):
