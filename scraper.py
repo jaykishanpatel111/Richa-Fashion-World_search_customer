@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import tempfile
 import time
 import logging
 import pandas as pd
@@ -23,9 +24,14 @@ if not logger.handlers:
 
 def open_browser(link):
     chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Headless for server usage
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+
+    # ✅ Use a temporary user data directory
+    temp_dir = tempfile.mkdtemp()
+    chrome_options.add_argument(f"--user-data-dir={temp_dir}")
+
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(link)
     time.sleep(3)
