@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import tempfile
+import random
 import time
 import logging
 import pandas as pd
