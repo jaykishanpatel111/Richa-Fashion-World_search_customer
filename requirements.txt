@@ -3,3 +3,4 @@ selenium
 beautifulsoup4
 pandas
 backports.zoneinfo; python_version < "3.9"
+gunicorn
